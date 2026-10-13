@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-booking_bot}
+      POSTGRES_USER: ${DB_USER:-booking_bot}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-booking_bot}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-booking_bot}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: ./bot-service
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-booking_bot}
+      DB_USER: ${DB_USER:-booking_bot}
+      DB_PASSWORD: ${DB_PASSWORD:-booking_bot}
+      BOT_TOKEN: ${BOT_TOKEN}
+      BOT_USERNAME: ${BOT_USERNAME}
+      ADMIN_CHAT_ID: ${ADMIN_CHAT_ID}
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8080}
+      APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Almaty}
+      MANUAL_CONFIRMATION: ${MANUAL_CONFIRMATION:-true}
+      SALON_NAME: ${SALON_NAME:-Салон красоты}
+      SALON_ADDRESS: ${SALON_ADDRESS:-}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+
+volumes:
+  postgres_data:

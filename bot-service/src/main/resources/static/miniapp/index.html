@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f9f6f1">
+  <meta name="description" content="Выберите услугу, мастера и удобное время — запись за пару минут.">
+  <title>Запись в студию красоты</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <span class="brand-mark" aria-hidden="true">✳</span>
+        <div class="brand-copy"><span class="brand-kicker">BEAUTY STUDIO</span><span id="salonName" class="brand-name">ВАША СТУДИЯ</span></div>
+      </div>
+      <span class="topbar-label"><span class="status-dot" aria-hidden="true"></span> Онлайн-запись</span>
+    </header>
+
+    <main class="app-main">
+      <div class="hero">
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="hero-label"><span class="short-rule"></span> ВРЕМЯ ДЛЯ СЕБЯ</div>
+        <h1>Красота начинается <em>с заботы.</em></h1>
+        <p>Несколько мгновений — и ваше время в студии забронировано.</p>
+        <span class="hero-ornament" aria-hidden="true">✦</span>
+      </div>
+
+      <div class="progress-block" id="progressBlock">
+        <div class="progress-topline"><span id="stepNumber">ШАГ 01 / 04</span><span id="stepHint">Выберите услугу</span></div>
+        <div class="steps-indicator" aria-label="Прогресс записи">
+          <span class="dot" data-step="1"></span><span class="dot" data-step="2"></span>
+          <span class="dot" data-step="3"></span><span class="dot" data-step="4"></span>
+        </div>
+      </div>
+
+      <div class="section-header" id="sectionHeader">
+        <button id="backBtn" class="back-btn" type="button" aria-label="Назад" hidden><span aria-hidden="true">←</span> Назад</button>
+        <div class="section-eyebrow" id="sectionEyebrow">01 / ВАШ РИТУАЛ</div>
+        <h2 id="stepTitle">Выберите услугу</h2>
+        <p id="stepDescription">Начните с того, что хочется сделать для себя сегодня.</p>
+      </div>
+
+      <section id="step-services" class="step" aria-label="Выбор услуги">
+        <div id="servicesList" class="card-list" aria-live="polite"><div class="loading-state">Загружаем услуги…</div></div>
+      </section>
+
+      <section id="step-masters" class="step" aria-label="Выбор мастера" hidden>
+        <div id="mastersList" class="card-list" aria-live="polite"></div>
+      </section>
+
+      <section id="step-slots" class="step" aria-label="Выбор даты и времени" hidden>
+        <div class="mini-section-label">ВЫБЕРИТЕ ДЕНЬ</div>
+        <div id="daysRow" class="days-row" aria-label="Доступные даты"></div>
+        <div class="availability-heading"><span class="mini-section-label">СВОБОДНОЕ ВРЕМЯ</span><span class="availability-note"><span class="status-dot"></span> Доступно для записи</span></div>
+        <div id="slotsGrid" class="slots-grid" aria-live="polite"></div>
+        <p id="noSlots" class="hint" hidden>На этот день свободного времени нет. Выберите другую дату.</p>
+      </section>
+
+      <section id="step-contact" class="step" aria-label="Ваши контакты" hidden>
+        <div class="summary-card">
+          <div class="summary-heading"><span>ВАША ЗАПИСЬ</span><span class="summary-star" aria-hidden="true">✳</span></div>
+          <div class="summary-row"><span>Услуга</span><b id="sumService"></b></div>
+          <div class="summary-row"><span>Мастер</span><b id="sumMaster"></b></div>
+          <div class="summary-row"><span>Когда</span><b id="sumTime"></b></div>
+          <div class="summary-divider"></div>
+          <div class="summary-row summary-total"><span>Стоимость</span><b id="sumPrice"></b></div>
+        </div>
+        <div class="form-title">Как к вам обращаться?</div>
+        <p class="form-intro">Контакты понадобятся только для подтверждения вашей записи.</p>
+        <label class="field"><span>Ваше имя</span><input id="clientName" type="text" autocomplete="name" maxlength="100" placeholder="Например, Алина"></label>
+        <label class="field"><span>Номер телефона</span><input id="clientPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+7 (7XX) XXX-XX-XX"></label>
+        <p class="privacy-note">Нажимая «Подтвердить запись», вы отправляете свои контактные данные студии для оформления визита.</p>
+      </section>
+
+      <section id="step-done" class="step" aria-label="Результат записи" hidden>
+        <div class="done-card">
+          <div class="done-orbit" aria-hidden="true"><div class="done-icon">✓</div></div>
+          <div class="done-eyebrow">ДО СКОРОЙ ВСТРЕЧИ</div>
+          <h2 id="doneTitle">Вы записаны!</h2>
+          <p id="doneText"></p>
+          <div class="done-followup">Все подробности отправим в чат с ботом <span aria-hidden="true">↗</span></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer" id="bookingFooter">
+      <div class="footer-detail"><div><span id="footerLabel">ВАША УСЛУГА</span><strong id="footerValue">Выберите из списка</strong></div><span class="footer-flower" aria-hidden="true">✳</span></div>
+      <button id="mainActionBtn" class="primary-btn" type="button" disabled>Продолжить <span aria-hidden="true">→</span></button>
+      <div class="footer-caption">С заботой о вашем времени <span aria-hidden="true">✦</span></div>
+    </footer>
+    <div id="toast" class="toast" role="alert" aria-live="assertive" hidden></div>
+  </div>
+  <script src="js/app.js"></script>
+</body>
+</html>
