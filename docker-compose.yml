@@ -29,13 +29,13 @@ services:
       BOT_TOKEN: ${BOT_TOKEN}
       BOT_USERNAME: ${BOT_USERNAME}
       ADMIN_CHAT_ID: ${ADMIN_CHAT_ID}
-      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8080}
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8081}
       APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Almaty}
       MANUAL_CONFIRMATION: ${MANUAL_CONFIRMATION:-true}
       SALON_NAME: ${SALON_NAME:-Салон красоты}
       SALON_ADDRESS: ${SALON_ADDRESS:-}
     ports:
-      - "${APP_PORT:-8080}:8080"
+      - "${APP_PORT:-8081}:8080"
 
 volumes:
   postgres_data:

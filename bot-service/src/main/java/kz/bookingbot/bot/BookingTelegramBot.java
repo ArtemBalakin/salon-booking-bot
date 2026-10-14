@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -205,7 +206,7 @@ public class BookingTelegramBot extends TelegramLongPollingBot implements Bookin
                 .chatId(chatId)
                 .text(text)
                 .replyMarkup(keyboard(
-                        List.of(webAppButton("Записаться")),
+                        webAppRow("Записаться"),
                         List.of(callbackButton("Мои записи", CB_MY))))
                 .build());
     }
@@ -216,7 +217,7 @@ public class BookingTelegramBot extends TelegramLongPollingBot implements Bookin
             safeExecute(SendMessage.builder()
                     .chatId(chatId)
                     .text("У вас нет предстоящих записей.")
-                    .replyMarkup(keyboard(List.of(webAppButton("Записаться"))))
+                    .replyMarkup(keyboard(webAppRow("Записаться")))
                     .build());
             return;
         }
@@ -323,7 +324,7 @@ public class BookingTelegramBot extends TelegramLongPollingBot implements Bookin
                 .chatId(booking.getTelegramUserId())
                 .text("К сожалению, салон не смог подтвердить запись на это время 😔\n\n"
                         + describe(booking) + "\n\nВыберите, пожалуйста, другое время.")
-                .replyMarkup(keyboard(List.of(webAppButton("Записаться снова"))))
+                .replyMarkup(keyboard(webAppRow("Записаться снова")))
                 .build());
     }
 
@@ -373,8 +374,12 @@ public class BookingTelegramBot extends TelegramLongPollingBot implements Bookin
         }
     }
 
-    private InlineKeyboardButton webAppButton(String text) {
-        return InlineKeyboardButton.builder().text(text).webApp(new WebAppInfo(miniAppUrl)).build();
+    /** Telegram принимает Web App только по https; для локального http кнопку не показываем. */
+    private List<InlineKeyboardButton> webAppRow(String text) {
+        if (!miniAppUrl.startsWith("https://")) {
+            return List.of();
+        }
+        return List.of(InlineKeyboardButton.builder().text(text).webApp(new WebAppInfo(miniAppUrl)).build());
     }
 
     private static InlineKeyboardButton callbackButton(String text, String data) {
@@ -384,7 +389,7 @@ public class BookingTelegramBot extends TelegramLongPollingBot implements Bookin
     /** Каждый переданный список — отдельный ряд кнопок. */
     @SafeVarargs
     private static InlineKeyboardMarkup keyboard(List<InlineKeyboardButton>... rows) {
-        return new InlineKeyboardMarkup(List.of(rows));
+        return new InlineKeyboardMarkup(Arrays.stream(rows).filter(row -> !row.isEmpty()).toList());
     }
 
     private void answerCallback(CallbackQuery callback, String text) {
